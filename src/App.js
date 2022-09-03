@@ -5,14 +5,27 @@ import image from "./assets/images/image3.png";
 
 
 function App() {
-  const imageRef              = useRef(null);
   const model                 = useRef(null);
+  const inputRef              = useRef(null);
+  const imageRef              = useRef(null);
+  const [file, setFile]       = useState();
+  const [fileURL, setFileURL] = useState('');
   const [width, setWidth]     = useState(0);
   const [height, setHeight]   = useState(0);
 
   useEffect(() => {
     loadModel("model.json");
   }, []);
+
+  useEffect(() => {
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onloadend = (() => {
+        setFileURL(fileReader.result);
+      })
+      fileReader.readAsDataURL(file);
+    }
+  }, [file]);
 
   const loadModel = async (path) => {
     model.current = new cvstfjs.ObjectDetectionModel();
@@ -52,17 +65,42 @@ function App() {
     
   };  
 
+  const onLoadFile = (e) => {
+    setFile(e.target.files[0]);
+  }
+
   return (
     <div id="App"> 
-      <div className='container'>
-        <img id='image' src={image} ref={imageRef} onLoad={onloadImage} />
-        <canvas id="canvas" width={width} height={height}/>
+    
+      <div className='box'> 
+        Hello word
+      </div>
+
+      <div className='img-container'>
+        <img id='image'
+          src={image} 
+          ref={imageRef} 
+          onLoad={onloadImage} 
+        />
+        <canvas id="canvas" 
+          width={width} 
+          height={height}
+        />
       </div>
 
       <button onClick={predict}>
         Execute
       </button>
 
+      <input 
+        type="file"
+        ref={inputRef}  
+        onChange={onLoadFile}
+      />
+
+      <div className='img-container'>
+        <img src={fileURL}/>
+      </div>
 
       
     </div>

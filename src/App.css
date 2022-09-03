@@ -1,21 +1,28 @@
 #App {
-  border: 1px solid red;
   height: 100vh;
   width: 100vw;
 }
 
-.container {
-  /* border: 5px solid blue; */
+.img-container {
   position: relative;
-  height: 800px;
+  width: 400px;
+  height: 300px;
 }
 
-#image {
-  /* border: 3px solid black; */
+img {
   position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+
 }
 
 canvas {
-  /* border: 5px solid red; */
   position: absolute;
+}
+
+.box {
+  border: 2px solid black;
+  width: 200px;
+  height: 200px;
 }
