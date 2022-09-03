@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import * as cvstfjs from '@microsoft/customvision-tfjs';
 import './App.css';
-import image from "./assets/images/image3.png";
-
 
 function App() {
   const model                 = useRef(null);
@@ -14,7 +12,7 @@ function App() {
   const [height, setHeight]   = useState(0);
 
   useEffect(() => {
-    loadModel("model.json");
+    loadModel("model.json")
   }, []);
 
   useEffect(() => {
@@ -40,6 +38,7 @@ function App() {
   const showDetectItemsOnCanvas = (results) => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     for (let i = 0; i < results[0].length; i++) {
       const [x1, y1, x2, y2]  = results[0][i];
@@ -52,7 +51,6 @@ function App() {
       
         ctx.strokeStyle = 'red'
         ctx.strokeRect(rectX, rectY, rectWith, rectHeight);
-
       }
     }
   }
@@ -62,7 +60,6 @@ function App() {
     const results = await model.current.executeAsync(data);
     console.log(results)
     showDetectItemsOnCanvas(results);
-    
   };  
 
   const onLoadFile = (e) => {
@@ -78,13 +75,13 @@ function App() {
 
       <div className='img-container'>
         <img id='image'
-          src={image} 
+          src={fileURL} 
           ref={imageRef} 
           onLoad={onloadImage} 
         />
         <canvas id="canvas" 
           width={width} 
-          height={height}
+          height={height} 
         />
       </div>
 
@@ -96,13 +93,7 @@ function App() {
         type="file"
         ref={inputRef}  
         onChange={onLoadFile}
-      />
-
-      <div className='img-container'>
-        <img src={fileURL}/>
-      </div>
-
-      
+      />      
     </div>
   );
 }
