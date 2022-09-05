@@ -17,8 +17,10 @@ import {
 } from '@mui/material';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
-const drawerWidth = 300;
+const drawerWidth = 400;
 
 function App() {
   const model = useRef(null);
@@ -86,65 +88,23 @@ function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <h3>Vehicule Detection</h3>
+          <h3>Vehicle Detection</h3>
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        variant="permanent"
-        anchor="right"
-        sx={{
-          width: { drawerWidth },
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       >
-
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {['Inbox', 'Starred'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
         {/* start content */}
-        <div id="App">
+        <div className='main-container'>
 
           <div className='img-container'>
-            <img id='image'
+            <img id='image' alt='custom-vision-img'
               src={fileURL}
               ref={imageRef}
               onLoad={onloadImage}
@@ -155,21 +115,66 @@ function App() {
             />
           </div>
 
-          <Button variant="contained" onClick={predict}>
-            Execute
-          </Button>
 
-          <input
-            type="file"
-            ref={inputRef}
-            onChange={onLoadFile}
-            
-          />
+          <div className="button-container">
+            <Button variant="contained" component="label" startIcon={<FileUploadIcon />}>
+              Select File
+              <input
+                hidden
+                type="file"
+                ref={inputRef}
+                onChange={onLoadFile}
+              />
+            </Button>
 
+            <Button variant="contained" onClick={predict}>
+              Execute
+            </Button> 
+
+          </div>
 
         </div>
         {/* end content */}
       </Box>
+
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="permanent"
+        anchor="right"
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider />
+
+        <List>
+          <ListItem>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary={"My Title"} />
+          </ListItem>
+        </List>
+      </Drawer>
     </Box>
   );
 }
