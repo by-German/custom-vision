@@ -13,23 +13,24 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Slider
 } from '@mui/material';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import FileUploadIcon from '@mui/icons-material/FileUpload'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 
 const drawerWidth = 400;
 
 function App() {
-  const model = useRef(null);
-  const inputRef = useRef(null);
-  const imageRef = useRef(null);
-  const [file, setFile] = useState();
+  const model                 = useRef(null);
+  const inputRef              = useRef(null);
+  const imageRef              = useRef(null);
+  const canvasRef             = useRef(null);
+  const [file, setFile]       = useState();
   const [fileURL, setFileURL] = useState('');
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [width, setWidth]     = useState(0);
+  const [height, setHeight]   = useState(0);
+  const [thresholdValue, setthresholdValue]    = useState(0.15);
 
   useEffect(() => {
     loadModel("model.json")
@@ -53,10 +54,14 @@ function App() {
   const onloadImage = () => {
     setWidth(imageRef.current.width)
     setHeight(imageRef.current.height)
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   const showDetectItemsOnCanvas = (results) => {
-    const canvas = document.getElementById('canvas');
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -65,7 +70,7 @@ function App() {
       const probability = results[1][i];
       // const tag               = results[2][i];
 
-      if (probability > 0.15) {
+      if (probability >= thresholdValue) {
         const [rectX, rectY] = [x1 * width, y1 * height];
         const [rectWith, rectHeight] = [x2 * width - rectX, y2 * height - rectY]
 
@@ -110,11 +115,11 @@ function App() {
               onLoad={onloadImage}
             />
             <canvas id="canvas"
+              ref={canvasRef}
               width={width}
               height={height}
             />
           </div>
-
 
           <div className="button-container">
             <Button variant="contained" component="label" startIcon={<FileUploadIcon />}>
@@ -126,11 +131,9 @@ function App() {
                 onChange={onLoadFile}
               />
             </Button>
-
             <Button variant="contained" onClick={predict}>
               Execute
-            </Button> 
-
+            </Button>
           </div>
 
         </div>
@@ -150,28 +153,28 @@ function App() {
         anchor="right"
       >
         <Toolbar />
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <Divider />
-
         <List>
           <ListItem>
+            <ListItemText primary="Information" />
+          </ListItem>
+          <Divider></Divider>
+          <ListItem>
             <ListItemIcon>
-              <InboxIcon />
+              <DataThresholdingIcon />
             </ListItemIcon>
-            <ListItemText primary={"My Title"} />
+            <ListItemText primary="Data Thresholding" secondary={"value " + thresholdValue} />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon />
+            <Slider 
+              min={0.0}
+              step={0.01}
+              max={1.0}
+              defaultValue={thresholdValue}
+              onChange={(e) => setthresholdValue(e.target.value)} 
+              value={thresholdValue}
+              valueLabelDisplay="auto"/>
+            <ListItemIcon />
           </ListItem>
         </List>
       </Drawer>
