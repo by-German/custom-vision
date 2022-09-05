@@ -1,6 +1,6 @@
 #App {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 
 .img-container {
@@ -19,10 +19,4 @@ img {
 
 canvas {
   position: absolute;
-}
-
-.box {
-  border: 2px solid black;
-  width: 200px;
-  height: 200px;
 }
