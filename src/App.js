@@ -20,16 +20,17 @@ import FileUploadIcon from '@mui/icons-material/FileUpload'
 import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 
 const drawerWidth = 400;
+const width = 600;
+const height = 400;
 
 function App() {
-  const model                 = useRef(null);
-  const inputRef              = useRef(null);
-  const imageRef              = useRef(null);
-  const canvasRef             = useRef(null);
-  const [file, setFile]       = useState();
-  const [fileURL, setFileURL] = useState('');
-  const [width, setWidth]     = useState(0);
-  const [height, setHeight]   = useState(0);
+  const model                  = useRef(null);
+  const inputRef               = useRef(null);
+  const videoRef               = useRef(null);
+  const canvasRef              = useRef(null);
+  const internalThresholdValue = useRef(0.15);
+  const [file, setFile]        = useState();
+  const [fileURL, setFileURL]  = useState('');
   const [thresholdValue, setthresholdValue]    = useState(0.15);
 
   useEffect(() => {
@@ -51,29 +52,21 @@ function App() {
     await model.current.loadModelAsync(path);
   };
 
-  const onloadImage = () => {
-    setWidth(imageRef.current.width)
-    setHeight(imageRef.current.height)
-    
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-
   const showDetectItemsOnCanvas = (results) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < results[0].length; i++) {
-      const [x1, y1, x2, y2] = results[0][i];
-      const probability = results[1][i];
-      // const tag               = results[2][i];
+      const [x1, y1, x2, y2]  = results[0][i];
+      const probability       = results[1][i];
+      // const tag            = results[2][i];
 
-      if (probability >= thresholdValue) {
-        const [rectX, rectY] = [x1 * width, y1 * height];
-        const [rectWith, rectHeight] = [x2 * width - rectX, y2 * height - rectY]
-
+      if (probability >= internalThresholdValue.current) {  
+        const [rectX, rectY]          = [x1 * width, y1 * height];
+        const [rectWith, rectHeight]  = [x2 * width - rectX, y2 * height - rectY]
+        
+        // drawn on canvas
         ctx.strokeStyle = 'red'
         ctx.strokeRect(rectX, rectY, rectWith, rectHeight);
       }
@@ -81,10 +74,12 @@ function App() {
   }
 
   const predict = async () => {
-    const data = document.getElementById('image');
+    const data = videoRef.current;
     const results = await model.current.executeAsync(data);
-    console.log(results)
+    const velocityRender = 10;
     showDetectItemsOnCanvas(results);
+    // todo: add conditional for to control when the video is finished
+    setTimeout(predict, velocityRender);
   };
 
   const onLoadFile = (e) => {
@@ -108,17 +103,23 @@ function App() {
         {/* start content */}
         <div className='main-container'>
 
-          <div className='img-container'>
-            <img id='image' alt='custom-vision-img'
+          <div className='video-container'>
+            <video id='video' autoPlay muted
+              // controls
+              // poster='path.img'
               src={fileURL}
-              ref={imageRef}
-              onLoad={onloadImage}
+              ref={videoRef}
+              width={width} 
+              height={height}
+              // onPlay={predict} // to use when will be removed button predict
             />
             <canvas id="canvas"
               ref={canvasRef}
-              width={width}
+              width={width} 
               height={height}
-            />
+            >
+              
+            </canvas>
           </div>
 
           <div className="button-container">
@@ -127,6 +128,7 @@ function App() {
               <input
                 hidden
                 type="file"
+                accept='video/mp4'
                 ref={inputRef}
                 onChange={onLoadFile}
               />
@@ -171,7 +173,7 @@ function App() {
               step={0.01}
               max={1.0}
               defaultValue={thresholdValue}
-              onChange={(e) => setthresholdValue(e.target.value)} 
+              onChange={(e) => {setthresholdValue(e.target.value); internalThresholdValue.current = e.target.value}} 
               value={thresholdValue}
               valueLabelDisplay="auto"/>
             <ListItemIcon />
