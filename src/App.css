@@ -23,6 +23,10 @@
   border: 1px solid #252525;
 }
 
+.interact:hover {
+  cursor: crosshair;
+}
+
 .button-container {
   display: flex;
   flex-direction: column;
