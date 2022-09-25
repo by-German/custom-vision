@@ -20,8 +20,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload'
 import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import PlayArrow from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import TrafficIcon from '@mui/icons-material/Traffic';
-
 
 const drawerWidth = 400;
 const width = 600;
@@ -32,10 +32,12 @@ function App() {
   const model                                 = useRef(null);
   const inputRef                              = useRef(null);
   const videoRef                              = useRef(null);
+  const [isPLaying, setIsPlaying]             = useState(false);
+  const finishPredicting                      = useRef(false);
+  const disabledPlayButton                    = useRef(true);
   const canvasRef                             = useRef(null);
   const canvasValidZone                       = useRef(null);
   const validArea                             = useRef({x1: 0, y1:0, x2: 0, y2: 0});
-  // const validArea                             = useRef({x1: 125, y1:81, x2: 589, y2: 81});
   const internalThresholdValue                = useRef(0.15); // TODO: user preferences
   const previousNumberVehicles                = useRef(0);
   const [file, setFile]                       = useState();
@@ -53,6 +55,7 @@ function App() {
       const fileReader = new FileReader();
       fileReader.onloadend = (() => {
         setFileURL(fileReader.result);
+        disabledPlayButton.current = false;
       })
       fileReader.readAsDataURL(file);
     }
@@ -110,12 +113,26 @@ function App() {
     const results = await model.current.executeAsync(data);
     const velocityRender = 10; // ms
     showDetectItemsOnCanvas(results);
-    // TODO: add conditional for to control when the video is finished
-    setTimeout(predict, velocityRender);
+    if (!finishPredicting.current) // finish recursivity
+      setTimeout(predict, velocityRender);
   };
+  
+  const playVideo = () => {
+    finishPredicting.current = false;
+    predict();
+    videoRef.current.play();
+    setIsPlaying(true);
+  }
+
+  const pauseVideo = () => {
+    finishPredicting.current = true;
+    videoRef.current.pause();
+    setIsPlaying(false);
+  }
 
   const onLoadFile = (e) => {
     setFile(e.target.files[0]);
+    // TODO: control recursivity with "finishPredicting.current = true;" and clearCanvas
   }
 
   const onClickValidArea = (e) => {
@@ -163,13 +180,12 @@ function App() {
         <div className='main-container'>
 
           <div className='video-container'>
-            <video id='video' autoPlay muted loop // controls
+            <video id='video' muted loop
               // poster='path.img'
               src={fileURL}
               ref={videoRef}
               width={width} 
               height={height}
-              onPlay={predict} // to use when will be removed button predict
             />
             <canvas
               ref={canvasRef}
@@ -187,9 +203,15 @@ function App() {
 
           <div className="button-container">
             
-            <Button variant="contained" startIcon={<PlayArrow />}>
-              Play
-            </Button>
+            { !isPLaying ? 
+              <Button variant="contained" startIcon={<PlayArrow />} onClick={playVideo} disabled={disabledPlayButton.current} >
+                Play
+              </Button> :
+              <Button variant="contained" startIcon={<PauseIcon />} onClick={pauseVideo}>
+                Pause
+              </Button> 
+            }            
+
             <Button variant="contained" component="label" startIcon={<FileUploadIcon />}>
               Select File
               <input
@@ -200,9 +222,6 @@ function App() {
                 onChange={onLoadFile}
               />
             </Button>
-            {/* <Button variant="contained" onClick={predict}>
-              Execute
-            </Button> */}
           </div>
 
         </div>
@@ -226,7 +245,7 @@ function App() {
           <ListItem>
             <ListItemText primary="Information" />
           </ListItem>
-          <Divider></Divider>
+          <Divider />
           <ListItem>
             <ListItemIcon>
               <DataThresholdingIcon />
