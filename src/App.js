@@ -38,13 +38,14 @@ function App() {
   const canvasRef                             = useRef(null);
   const canvasValidZone                       = useRef(null);
   const validArea                             = useRef({x1: 0, y1:0, x2: 0, y2: 0});
-  const internalThresholdValue                = useRef(0.15); // TODO: user preferences
+  const internalThresholdValue                = useRef(0.15);
   const previousNumberVehicles                = useRef(0);
   const [file, setFile]                       = useState();
   const [fileURL, setFileURL]                 = useState('');
-  const [thresholdValue, setthresholdValue]   = useState(0.15);  // TODO: user preferences
+  const [thresholdValue, setthresholdValue]   = useState(0.15);
   const [numberVehicles, setNumberVehicles]   = useState(0);
   const internalNumberVehicles                = useRef(0);
+  const [greenTime, setGreenTime]             = useState(0);
 
   useEffect(() => {
     loadModel("model.json")
@@ -82,16 +83,15 @@ function App() {
         const [rectX, rectY]          = [x1 * width, y1 * height];
         const [rectWith, rectHeight]  = [x2 * width - rectX, y2 * height - rectY]
         
-        if (rectX >= validArea.current.x1 &&  
-            rectX <= validArea.current.x2 &&
-            rectY >= validArea.current.y1) {
-          // drawn on canvas
+        // limit vehicle count detection area
+        if (rectX >= validArea.current.x1 && rectX <= validArea.current.x2 && rectY >= validArea.current.y1) {
+          // drawn on canvas when is detected
           ctx.lineWidth = 2;
           ctx.strokeStyle = 'red';
           countCurrentVehicles++;
         } 
         else {
-          // drawn on canvas
+          // drawn on canvas when is not detected
           ctx.lineWidth = 1;
           ctx.strokeStyle = 'cyan';
         }
@@ -105,8 +105,18 @@ function App() {
     }
     previousNumberVehicles.current = countCurrentVehicles;
     setNumberVehicles(internalNumberVehicles.current);
-
+    
+    semaphoreTimeLogic(10);
   }
+
+  const semaphoreTimeLogic = (seconds) => {
+    if (videoRef.current.currentTime >= seconds) { // execute every 30 secs
+      // number of vehicles is equal to semaphore time (set time)
+      setGreenTime(internalNumberVehicles.current);
+      videoRef.current.pause(); // pause video
+    }
+
+  };
 
   const predict = async () => {
     const data = videoRef.current;
@@ -268,7 +278,13 @@ function App() {
             <ListItemIcon> 
               <TimeToLeaveIcon />
             </ListItemIcon>
-            <ListItemText primary="Number of vehicles" secondary={"value " + numberVehicles} />
+            <ListItemText primary="Number of vehicles" secondary={"total " + numberVehicles} />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon> 
+              <TrafficIcon />
+            </ListItemIcon>
+            <ListItemText primary="Green light time" secondary={"time in seconds " + greenTime} />
           </ListItem>
         </List>
       </Drawer>
