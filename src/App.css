@@ -35,8 +35,8 @@
   width: 502px; /*TODO: fix*/
 }
 
-.information p {
-  margin: 10px;
+.information :nth-child(2) {
+  margin-top: 40px;
 }
 
 .interact:hover {

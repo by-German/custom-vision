@@ -391,10 +391,9 @@ function App() {
                   onChange={onLoadFile}
                 />
               </Button>
-              <p>Dynamic Time: </p>
-              <p>Static Time: </p>
+              <p>Static Time: 20</p>
+              <p>Dynamic Time: { greenTime }</p>
               <p>Number of vehicles: { numberVehicles }</p>
-              <p>Green light time: { greenTime }</p>
             </div>
           </div>
 
@@ -447,10 +446,9 @@ function App() {
                   onChange={onLoadFile2}
                 />
               </Button>
-              <p>Dynamic Time: </p>
-              <p>Static Time: </p>
+              <p>Static Time: 20</p>
+              <p>Dynamic Time: { greenTime2 }</p>
               <p>Number of vehicles: { numberVehicles2 }</p>
-              <p>Green light time: { greenTime2 }</p>
             </div>
           </div>
 
