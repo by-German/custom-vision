@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import * as cvstfjs from '@microsoft/customvision-tfjs';
 import './App.css';
 import {
@@ -22,6 +22,7 @@ import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import TrafficIcon from '@mui/icons-material/Traffic';
+import { SettingsSuggest } from '@mui/icons-material';
 
 const drawerWidth = 400;
 const width = 500;
@@ -30,11 +31,11 @@ const height = 350;
 function App() {
 
   // general
-  const model                                 = useRef(null);
+  const internalThresholdValue                = useRef(0.50);
   const finishPredicting                      = useRef(false); // control recursion
-  const internalThresholdValue                = useRef(0.80);
-  
+
   // Controls for video 1 
+  const model                                 = useRef(null);
   const inputRef                              = useRef(null);
   const videoRef                              = useRef(null);
   const [isPLaying, setIsPlaying]             = useState(false);
@@ -50,6 +51,7 @@ function App() {
   const [greenTime, setGreenTime]             = useState(0);
   
   // controls for video 2
+  const model2                                = useRef(null);
   const inputRef2                             = useRef(null);
   const videoRef2                             = useRef(null);
   // const [isPLaying2, setIsPlaying2]           = useState(false);
@@ -68,6 +70,7 @@ function App() {
   
   useEffect(() => {
     loadModel("model.json")
+    loadModel2("model.json") // best option for performance
   }, []);
 
   useEffect(() => {
@@ -97,6 +100,12 @@ function App() {
   const loadModel = async (path) => {
     model.current = new cvstfjs.ObjectDetectionModel();
     await model.current.loadModelAsync(path);
+  };
+
+  // TODO: refactor
+  const loadModel2 = async (path) => {
+    model2.current = new cvstfjs.ObjectDetectionModel();
+    await model2.current.loadModelAsync(path);
   };
 
   const showDetectItemsOnCanvas = (results) => {
@@ -183,37 +192,44 @@ function App() {
   }
 
   const semaphoreTimeLogic = () => {
-    if (videoRef.current.currentTime >= 10) { // TODO: fix for video 2
+    if (videoRef.current.currentTime >= 10) { // TODO: fix for video 2 and playbackRate
       // number of vehicles is equal to semaphore time (set time)
-      setGreenTime(internalNumberVehicles.current * 2);
-      videoRef.current.pause(); // pause video
       // TODO: refactor
+      setGreenTime(internalNumberVehicles.current * 2);
       setGreenTime2(internalNumberVehicles2.current * 2);
-      videoRef2.current.pause();
-      
+      pauseVideo();      
     }
   };
 
   const predict = async () => {
-
-    // TODO: refactor
     const data = videoRef.current;
     const results = await model.current.executeAsync(data);
-    const data2 = videoRef2.current;
-    const results2 = await model.current.executeAsync(data2);
     showDetectItemsOnCanvas(results);
-    showDetectItemsOnCanvas2(results2);
-
     const velocityRender = 10; // ms
     if (!finishPredicting.current) // finish recursivity
       setTimeout(predict, velocityRender);
   };
   
+  // TODO: refactor
+  const predict2 = async () => {
+    const data = videoRef2.current;
+    const results = await model2.current.executeAsync(data);
+    showDetectItemsOnCanvas2(results);
+    const velocityRender = 10; // ms
+    if (!finishPredicting.current) // finish recursivity
+      setTimeout(predict2, velocityRender);
+  };
+
+
   const playVideo = () => {
     finishPredicting.current = false;
-    predict();
-    videoRef.current.play();
     // TODO: refactor 
+    videoRef.current.playbackRate  = 0.5;
+    videoRef2.current.playbackRate  = 0.5;
+
+    predict();
+    predict2();
+    videoRef.current.play();
     videoRef2.current.play();
     setIsPlaying(true);
   }
@@ -225,11 +241,39 @@ function App() {
     setIsPlaying(false);
   }
 
+  const resetPredict = () => {
+    finishPredicting.current = true;
+
+    // reset video
+    videoRef.current.currentTime = 0;
+    videoRef2.current.currentTime = 0;
+    pauseVideo();
+
+    // set values
+    previousNumberVehicles.current = 0;
+    previousNumberVehicles2.current = 0;
+    setNumberVehicles(0);
+    setNumberVehicles2(0);
+    internalNumberVehicles.current = 0;
+    internalNumberVehicles2.current = 0;
+    setGreenTime(0);
+    setGreenTime2(0);
+
+    // clear canvas:
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const canvas2 = canvasRef2.current;
+    const  ctx2 = canvas2.getContext('2d');
+    ctx2.clearRect(0, 0, canvas.width, canvas.height);
+    
+  }
+
   const onLoadFile = (e) => {
     setFile(e.target.files[0]);
     // control recursivity clearCanvas
     finishPredicting.current = true;
-    // TODO: clear canvas
+    pauseVideo();
   }
 
   // TODO: refactor
@@ -237,7 +281,7 @@ function App() {
     setFile2(e.target.files[0]);
     // control recursivity clearCanvas
     finishPredicting.current = true;
-    // TODO: clear canvas
+    pauseVideo();
   }
 
   const onClickValidArea = (e) => {
@@ -357,13 +401,16 @@ function App() {
           <div className="button-container">
             { !isPLaying ? 
               <Button variant="contained" startIcon={<PlayArrow />} onClick={playVideo} 
-                      disabled={ disabledPlayButton.current || disabledPlayButton2.current } >
+                      disabled={ disabledPlayButton.current && disabledPlayButton2.current }>
                 Play
               </Button> :
               <Button variant="contained" startIcon={<PauseIcon />} onClick={pauseVideo}>
                 Pause
               </Button> 
-            }            
+            }      
+              <Button variant="contained" onClick={resetPredict}>
+                RESET
+              </Button>   
           </div>
 
 
