@@ -2,24 +2,27 @@ import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 're
 import * as cvstfjs from '@microsoft/customvision-tfjs';
 import './Video-information.css';
 import {
-    Button,
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload'
-import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import TrafficIcon from '@mui/icons-material/Traffic';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const width = 500;
 const height = 350;
 
 const VideoInformation = forwardRef((props, ref) => {
   // general
-  const staticTime                            = 10;
-  const internalThresholdValue                = useRef(0.50);
-  const finishPredicting                      = useRef(false); // control recursion
+  const staticTime                            = 20;
   
   // Controls for video
   const model                                 = useRef(null);
+  const finishPredicting                      = useRef(false); // control recursion
   const inputRef                              = useRef(null);
   const videoRef                              = useRef(null);
   const setIsPlaying                          = props.setIsPlaying;
@@ -31,6 +34,7 @@ const VideoInformation = forwardRef((props, ref) => {
   const disabledPlayButton                    = props.disabledPlayButton;
   const previousNumberVehicles                = useRef(0);
   const [numberVehicles, setNumberVehicles]   = useState(0);
+  const internalThresholdValue                = useRef(0.50);
   const internalNumberVehicles                = useRef(0);
   const [greenTime, setGreenTime]             = useState(0);
   const setVideoChanged                       = props.setVideoChanged;
@@ -112,7 +116,7 @@ const VideoInformation = forwardRef((props, ref) => {
   }
 
   const semaphoreTimeLogic = () => {
-    if (videoRef.current.currentTime >= staticTime) { 
+    if (videoRef.current.currentTime >= (staticTime / 2)) { // fix /2 is necessary, video is in 0.5 speed
       // number of vehicles is equal to semaphore time (set time)
       setGreenTime(internalNumberVehicles.current * 2);
       pauseVideo();
@@ -163,7 +167,7 @@ const VideoInformation = forwardRef((props, ref) => {
 
   const playVideo = () => {
     finishPredicting.current = false;
-    videoRef.current.playbackRate  = 0.5;
+    videoRef.current.playbackRate  = 0.5; // fix static time in semaphoreTimeLogic
     predict();
     videoRef.current.play();
     setIsPlaying(true);
@@ -224,9 +228,16 @@ const VideoInformation = forwardRef((props, ref) => {
             onChange={onLoadFile}
           />
         </Button>
-        <p>Static Time: { staticTime }</p>
-        <p>Dynamic Time: { greenTime }</p>
-        <p>Number of vehicles: { numberVehicles }</p>
+        <List disablePadding>
+          {[["Static Time:", staticTime, <AccessTimeIcon />],
+            ["Number of vehicles", numberVehicles, <TimeToLeaveIcon />],
+            ["Dynamic Time:", greenTime, <TrafficIcon />]].map((content, index) => (
+              <ListItem key={index}>
+              <ListItemIcon>{content[2]}</ListItemIcon>
+              <ListItemText primary={content[0]} secondary={content[1]} />
+            </ListItem>
+          ))}
+        </List>
       </div>
     </div>
   </>
