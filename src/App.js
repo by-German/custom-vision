@@ -18,7 +18,7 @@ import VideoInformation from './components/Video-information';
 const useVideoRef = () => {
   const videoComponentRef                           = useRef(null);
   const [disabledPlayButton, setDisabledPlayButton] = useState(true);
-
+  
   return {
     videoComponentRef,
     disabledPlayButton,
