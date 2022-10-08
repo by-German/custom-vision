@@ -1,24 +1,19 @@
-import { useEffect, useState, useRef, useReducer } from 'react';
-import * as cvstfjs from '@microsoft/customvision-tfjs';
+import { useEffect, useState, useRef } from 'react';
 import './App.css';
+import VideoInformation from './components/Video-information';
 import {
   Button,
   Box,
   AppBar,
   Toolbar,
 } from '@mui/material';
-import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import TrafficIcon from '@mui/icons-material/Traffic';
-
-import VideoInformation from './components/Video-information';
 
 const useVideoRef = () => {
   const videoComponentRef                           = useRef(null);
   const [disabledPlayButton, setDisabledPlayButton] = useState(true);
-  
+
   return {
     videoComponentRef,
     disabledPlayButton,

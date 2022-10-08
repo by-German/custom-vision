@@ -5,6 +5,9 @@ import {
     Button,
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload'
+import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
+import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+import TrafficIcon from '@mui/icons-material/Traffic';
 
 const width = 500;
 const height = 350;
