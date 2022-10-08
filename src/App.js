@@ -3,18 +3,9 @@ import * as cvstfjs from '@microsoft/customvision-tfjs';
 import './App.css';
 import {
   Button,
-  CircularProgress,
   Box,
-  Drawer,
   AppBar,
   Toolbar,
-  List,
-  Divider,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Slider
 } from '@mui/material';
 import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
@@ -24,13 +15,21 @@ import TrafficIcon from '@mui/icons-material/Traffic';
 
 import VideoInformation from './components/Video-information';
 
+const useVideoRef = () => {
+  const videoComponentRef                           = useRef(null);
+  const [disabledPlayButton, setDisabledPlayButton] = useState(true);
+
+  return {
+    videoComponentRef,
+    disabledPlayButton,
+    setDisabledPlayButton
+  }
+}
+
 function App() {
-  const [isPLaying, setIsPlaying]                     = useState(false);
-  const [disabledPlayButton, setDisabledPlayButton]   = useState(true);
-  const [disabledPlayButton2, setDisabledPlayButton2] = useState(true);
-  const videoComponentRef                             = useRef(null)
-  const videoComponentRef2                            = useRef(null)
-  const [videoChanged, setVideoChanged]               = useState(false);
+  const videoComponent                  = [useVideoRef(), useVideoRef()]
+  const [isPLaying, setIsPlaying]       = useState(false);
+  const [videoChanged, setVideoChanged] = useState(false);
 
   useEffect(() => {
     handleResetPredict();
@@ -39,18 +38,18 @@ function App() {
 
   
   const handlePlayVideo = () => {
-    videoComponentRef.current.playVideo();
-    videoComponentRef2.current.playVideo();
+    videoComponent[0].videoComponentRef.current.playVideo();
+    videoComponent[1].videoComponentRef.current.playVideo();
   }
 
   const handlePauseVideo = () => {
-    videoComponentRef.current.pauseVideo();
-    videoComponentRef2.current.pauseVideo();
+    videoComponent[0].videoComponentRef.current.pauseVideo();
+    videoComponent[1].videoComponentRef.current.pauseVideo();
   }
 
   const handleResetPredict = () => {
-    videoComponentRef.current.resetPredict();
-    videoComponentRef2.current.resetPredict();
+    videoComponent[0].videoComponentRef.current.resetPredict();
+    videoComponent[1].videoComponentRef.current.resetPredict();
   }
 
   return (
@@ -71,15 +70,15 @@ function App() {
 
           <VideoInformation 
             setIsPlaying={setIsPlaying}
-            disabledPlayButton={setDisabledPlayButton}
+            disabledPlayButton={videoComponent[0].setDisabledPlayButton}
             setVideoChanged={setVideoChanged}
-            ref={videoComponentRef}
+            ref={videoComponent[0].videoComponentRef}
             />
 
           <div className="button-container">
             { !isPLaying ? 
               <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo} 
-              disabled={ disabledPlayButton || disabledPlayButton2 }>
+              disabled={ videoComponent[0].disabledPlayButton || videoComponent[1].disabledPlayButton }>
                 Play
               </Button> :
               <Button variant="contained" startIcon={<PauseIcon />} onClick={handlePauseVideo}>
@@ -92,10 +91,10 @@ function App() {
           </div>
 
           <VideoInformation 
-            ref={videoComponentRef2}
+            ref={videoComponent[1].videoComponentRef}
             setIsPlaying={setIsPlaying}
             setVideoChanged={setVideoChanged}
-            disabledPlayButton={setDisabledPlayButton2}
+            disabledPlayButton={videoComponent[1].setDisabledPlayButton}
           />
           
         </div>
