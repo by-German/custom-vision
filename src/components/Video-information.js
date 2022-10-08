@@ -30,6 +30,7 @@ const VideoInformation = forwardRef((props, ref) => {
   const [numberVehicles, setNumberVehicles]   = useState(0);
   const internalNumberVehicles                = useRef(0);
   const [greenTime, setGreenTime]             = useState(0);
+  const setVideoChanged                       = props.setVideoChanged;
 
   useImperativeHandle(ref, () => ({
     playVideo,
@@ -47,6 +48,7 @@ const VideoInformation = forwardRef((props, ref) => {
       fileReader.onloadend = (() => {
         setFileURL(fileReader.result);
         disabledPlayButton(false); // TODO: fix
+        setVideoChanged(true);
       })
       fileReader.readAsDataURL(file);
     }
@@ -107,7 +109,7 @@ const VideoInformation = forwardRef((props, ref) => {
   }
 
   const semaphoreTimeLogic = () => {
-    if (videoRef.current.currentTime >= staticTime) { // TODO: fix when video is changed
+    if (videoRef.current.currentTime >= staticTime) { 
       // number of vehicles is equal to semaphore time (set time)
       setGreenTime(internalNumberVehicles.current * 2);
       pauseVideo();
