@@ -10,7 +10,6 @@ import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import { Header } from './components/Header';
 
-
 const useVideoRef = () => {
   const videoComponentRef = useRef(null);
   const [disabledPlayButton, setDisabledPlayButton] = useState(true);
@@ -50,6 +49,11 @@ function App() {
       <Header />
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Toolbar />
+
+        <div className='title-content'>
+          <h1 className='text-gradient'>VEHICLE DETECTION</h1>
+          <h2>CUSTOM VISION</h2>
+        </div>
 
         <div className='main-container'>
 

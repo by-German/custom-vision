@@ -1,8 +1,37 @@
+.title-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 74px 0px;
+}
+
+.text-gradient {
+  background: #8C3ECF;
+  background: linear-gradient(to right, #8C3ECF 0%, #AEAACF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title-content>h1 {
+  font-size: 4.5rem;
+  color: #fff;
+}
+
+.title-content>h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  font-weight: 400;
+}
+
 .main-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+
+  border: 1px solid red;
 }
 
 .button-container {
