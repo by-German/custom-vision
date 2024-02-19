@@ -4,11 +4,12 @@ import VideoInformation from './components/Video-information';
 import {
   Button,
   Box,
-  AppBar,
   Toolbar,
 } from '@mui/material';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import { Header } from './components/Header';
+
 
 const useVideoRef = () => {
   const videoComponentRef = useRef(null);
@@ -46,16 +47,8 @@ function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <h3>Vehicle Detection</h3>
-        </Toolbar>
-      </AppBar>
-
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 2 }}
-      >
+      <Header />
+      <Box sx={{ flexGrow: 1, p: 2 }}>
         <Toolbar />
 
         <div className='main-container'>

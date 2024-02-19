@@ -22,5 +22,6 @@ main {
   width: 100vw;
   z-index: -2;
   position: fixed;
-  background-image: linear-gradient(to top, #051937, #153066, #314898, #5660cb, #8177ff);
+  background: #2F3243;
+  background: radial-gradient(at center top, #2F3243, #010101);
 }
