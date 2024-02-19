@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+main {
+  max-width: 1080px;
+  margin: auto;
+}
+
+.background {
+  height: 100vh;
+  width: 100vw;
+  z-index: -2;
+  position: fixed;
+  background-image: linear-gradient(to top, #051937, #153066, #314898, #5660cb, #8177ff);
+}
