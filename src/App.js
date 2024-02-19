@@ -11,7 +11,7 @@ import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 
 const useVideoRef = () => {
-  const videoComponentRef                           = useRef(null);
+  const videoComponentRef = useRef(null);
   const [disabledPlayButton, setDisabledPlayButton] = useState(true);
 
   return {
@@ -22,8 +22,8 @@ const useVideoRef = () => {
 }
 
 function App() {
-  const videoComponent                  = [useVideoRef(), useVideoRef()]
-  const [isPLaying, setIsPlaying]       = useState(false);
+  const videoComponent = useVideoRef();
+  const [isPLaying, setIsPlaying] = useState(false);
   const [videoChanged, setVideoChanged] = useState(false);
 
   useEffect(() => {
@@ -31,20 +31,17 @@ function App() {
     setVideoChanged(false);
   }, [videoChanged]);
 
-  
+
   const handlePlayVideo = () => {
-    videoComponent[0].videoComponentRef.current.playVideo();
-    videoComponent[1].videoComponentRef.current.playVideo();
+    videoComponent.videoComponentRef.current.playVideo();
   }
 
   const handlePauseVideo = () => {
-    videoComponent[0].videoComponentRef.current.pauseVideo();
-    videoComponent[1].videoComponentRef.current.pauseVideo();
+    videoComponent.videoComponentRef.current.pauseVideo();
   }
 
   const handleResetPredict = () => {
-    videoComponent[0].videoComponentRef.current.resetPredict();
-    videoComponent[1].videoComponentRef.current.resetPredict();
+    videoComponent.videoComponentRef.current.resetPredict();
   }
 
   return (
@@ -63,35 +60,28 @@ function App() {
 
         <div className='main-container'>
 
-          <VideoInformation 
+          <VideoInformation
             setIsPlaying={setIsPlaying}
-            disabledPlayButton={videoComponent[0].setDisabledPlayButton}
+            disabledPlayButton={videoComponent.setDisabledPlayButton}
             setVideoChanged={setVideoChanged}
-            ref={videoComponent[0].videoComponentRef}
-            />
+            ref={videoComponent.videoComponentRef}
+          />
 
           <div className="button-container">
-            { !isPLaying ? 
-              <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo} 
-              disabled={ videoComponent[0].disabledPlayButton || videoComponent[1].disabledPlayButton }>
+            {!isPLaying ?
+              <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo}
+                disabled={videoComponent.disabledPlayButton}>
                 Play
               </Button> :
               <Button variant="contained" startIcon={<PauseIcon />} onClick={handlePauseVideo}>
                 Pause
-              </Button> 
-            }      
-              <Button variant="contained" onClick={handleResetPredict}>
-                Reset
-              </Button>   
+              </Button>
+            }
+            <Button variant="contained" onClick={handleResetPredict}>
+              Reset
+            </Button>
           </div>
 
-          <VideoInformation 
-            ref={videoComponent[1].videoComponentRef}
-            setIsPlaying={setIsPlaying}
-            setVideoChanged={setVideoChanged}
-            disabledPlayButton={videoComponent[1].setDisabledPlayButton}
-          />
-          
         </div>
 
       </Box>
