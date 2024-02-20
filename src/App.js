@@ -53,6 +53,7 @@ function App() {
         <div className='title-content'>
           <h1 className='text-gradient'>VEHICLE DETECTION</h1>
           <h2>CUSTOM VISION</h2>
+          <p>*Important: Activate hardware acceleration in your browser settings</p>
         </div>
 
         <div className='main-container'>

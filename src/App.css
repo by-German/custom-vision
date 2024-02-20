@@ -5,6 +5,10 @@
   gap: 8px;
   margin: 74px 0px;
 }
+.title-content > p {
+  color: #959595;
+  font-weight: 500;
+}
 
 .text-gradient {
   background: #8C3ECF;
