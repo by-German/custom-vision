@@ -40,6 +40,9 @@ const VideoInformation = forwardRef((props, ref) => {
 
   useEffect(() => {
     loadModel("model.json")
+
+    // fix: load video mode play
+    disabledPlayButton(false)
   }, []);
 
   useEffect(() => {
@@ -172,7 +175,7 @@ const VideoInformation = forwardRef((props, ref) => {
     <div className='video-container'>
       <div className="video">
         <video id='video' muted loop
-          src={fileURL}
+          src={fileURL == '' ? process.env.PUBLIC_URL + '/video/sample.mp4' : fileURL}
           ref={videoRef}
           width={width}
           height={height}
