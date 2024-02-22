@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Slider,
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
@@ -30,13 +31,22 @@ const VideoInformation = forwardRef((props, ref) => {
   const setVideoChanged = props.setVideoChanged;
 
   // manage internal values
-  const internalThresholdValue = useRef(0.50);
+  // const internalThresholdValue = props.thresholdValue;
+  // const [internalThresholdValue, setInternalThresholdValue] = props.thresholdValueUseState;
+  // const [thresholdValue, setThresholdValue] = useState(props.thresholdValue);
+  const internalThresholdValue = useRef(props.thresholdValue);
+
 
   useImperativeHandle(ref, () => ({
     playVideo,
     resetPredict,
-    pauseVideo
+    pauseVideo,
+    setInternalThresholdValue,
   }))
+
+  const setInternalThresholdValue = (value) => {
+    internalThresholdValue.current = value;
+  }
 
   useEffect(() => {
     loadModel("model.json")

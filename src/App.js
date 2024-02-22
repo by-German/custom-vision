@@ -5,10 +5,19 @@ import {
   Button,
   Box,
   Toolbar,
+  Slider,
+  List,
+  ListItemText,
+  ListItem,
+  ListItemIcon,
+  Collapse,
 } from '@mui/material';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import { Header } from './components/Header';
+
+
 
 const useVideoRef = () => {
   const videoComponentRef = useRef(null);
@@ -17,7 +26,7 @@ const useVideoRef = () => {
   return {
     videoComponentRef,
     disabledPlayButton,
-    setDisabledPlayButton
+    setDisabledPlayButton,
   }
 }
 
@@ -25,12 +34,12 @@ function App() {
   const videoComponent = useVideoRef();
   const [isPLaying, setIsPlaying] = useState(false);
   const [videoChanged, setVideoChanged] = useState(false);
+  const [thresholdValue, setThresholdValue] = useState(0.75);
 
   useEffect(() => {
     handleResetPredict();
     setVideoChanged(false);
   }, [videoChanged]);
-
 
   const handlePlayVideo = () => {
     videoComponent.videoComponentRef.current.playVideo();
@@ -42,6 +51,11 @@ function App() {
 
   const handleResetPredict = () => {
     videoComponent.videoComponentRef.current.resetPredict();
+  }
+
+  const handleThresholdValue = (e, value) => {
+    setThresholdValue(value);
+    videoComponent.videoComponentRef.current.setInternalThresholdValue(value);
   }
 
   return (
@@ -62,22 +76,53 @@ function App() {
             setIsPlaying={setIsPlaying}
             disabledPlayButton={videoComponent.setDisabledPlayButton}
             setVideoChanged={setVideoChanged}
+            thresholdValue={thresholdValue}
             ref={videoComponent.videoComponentRef}
           />
 
-          <div className="button-container">
-            {!isPLaying ?
-              <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo}
-                disabled={videoComponent.disabledPlayButton}>
-                Play
-              </Button> :
-              <Button variant="contained" startIcon={<PauseIcon />} onClick={handlePauseVideo}>
-                Pause
+          <div className="video-controllers">
+            <h3>Controllers</h3>
+
+            <List>
+              <ListItem>
+                <ListItemIcon >
+                  <TimeToLeaveIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{ style: { color: 'white' } }}
+                  secondaryTypographyProps={{ style: { color: 'white' } }}
+                  primary="Threshold value"
+                  secondary={thresholdValue} />
+              </ListItem>
+
+              <ListItem>
+                <ListItemIcon>
+                </ListItemIcon>
+                <Slider
+                  value={thresholdValue}
+                  step={0.01}
+                  min={0.01}
+                  max={0.99}
+                  valueLabelDisplay="auto"
+                  onChange={handleThresholdValue}
+                />
+              </ListItem>
+            </List>
+
+            <div className="button-container">
+              {!isPLaying ?
+                <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo}
+                  disabled={videoComponent.disabledPlayButton}>
+                  Play
+                </Button> :
+                <Button variant="contained" startIcon={<PauseIcon />} onClick={handlePauseVideo}>
+                  Pause
+                </Button>
+              }
+              <Button variant="outlined" onClick={handleResetPredict}>
+                Reset
               </Button>
-            }
-            <Button variant="contained" onClick={handleResetPredict}>
-              Reset
-            </Button>
+            </div>
           </div>
 
         </div>
