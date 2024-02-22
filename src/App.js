@@ -111,11 +111,25 @@ function App() {
 
             <div className="button-container">
               {!isPLaying ?
-                <Button variant="contained" startIcon={<PlayArrow />} onClick={handlePlayVideo}
-                  disabled={videoComponent.disabledPlayButton}>
-                  Play
+                <Button
+                  variant={videoComponent.disabledPlayButton ? "outlined" : "contained" }
+                  startIcon={<PlayArrow />}
+                  onClick={handlePlayVideo}
+                  disabled={videoComponent.disabledPlayButton}
+                  style={{
+                    color: videoComponent.disabledPlayButton ?
+                      '#959595' : undefined, // Color del texto cuando está deshabilitado
+                    backgroundColor: videoComponent.disabledPlayButton ?
+                      'transparent' : undefined, // Color cuando está deshabilitado
+                      borderColor: videoComponent.disabledPlayButton ? 
+                      '#303030' : undefined, // Color del borde cuando está deshabilitado
+                  }}>
+                  Start
                 </Button> :
-                <Button variant="contained" startIcon={<PauseIcon />} onClick={handlePauseVideo}>
+                <Button
+                  variant="contained"
+                  startIcon={<PauseIcon />}
+                  onClick={handlePauseVideo}>
                   Pause
                 </Button>
               }

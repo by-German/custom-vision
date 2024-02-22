@@ -34,8 +34,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-
-  border: 1px solid red;
 }
 
 .button-container {
@@ -45,4 +43,29 @@
   width: 180px;
   height: 100px;
   justify-content: space-evenly;
+}
+
+.video-controllers {
+  border: 1px solid #505050;
+  padding: 16px 32px;
+  border-radius: 16px;
+  width: 325px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.video-controllers > h3 {
+  color: #ada5cd;
+  font-size: 1.5rem;
+  margin: 10px 0px;
+  font-weight: 500;
+
+  border-bottom: 1px solid #505050;
+  padding-bottom: 16px;
+}
+
+.button-container {
+  align-self: center;
+  width: 100%;
 }
