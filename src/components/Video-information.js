@@ -27,11 +27,10 @@ const VideoInformation = forwardRef((props, ref) => {
   const [file, setFile] = useState();
   const [fileURL, setFileURL] = useState('');
   const disabledPlayButton = props.disabledPlayButton;
-  const previousNumberVehicles = useRef(0);
-  const [numberVehicles, setNumberVehicles] = useState(0);
-  const internalThresholdValue = useRef(0.50);
-  const internalNumberVehicles = useRef(0);
   const setVideoChanged = props.setVideoChanged;
+
+  // manage internal values
+  const internalThresholdValue = useRef(0.50);
 
   useImperativeHandle(ref, () => ({
     playVideo,
@@ -97,16 +96,9 @@ const VideoInformation = forwardRef((props, ref) => {
       }
     }
 
-    logicCountingVehicles(countCurrentVehicles);
   }
 
-  const logicCountingVehicles = (countCurrentVehicles) => {
-    if (countCurrentVehicles > previousNumberVehicles.current) {
-      internalNumberVehicles.current++;
-    }
-    previousNumberVehicles.current = countCurrentVehicles;
-    setNumberVehicles(internalNumberVehicles.current);
-  }
+
 
   const predict = async () => {
     const data = videoRef.current;
@@ -170,9 +162,6 @@ const VideoInformation = forwardRef((props, ref) => {
     videoRef.current.currentTime = 0;
     pauseVideo();
     // set values
-    previousNumberVehicles.current = 0;
-    setNumberVehicles(0);
-    internalNumberVehicles.current = 0;
     clearCanvas();
     setTimeout(clearCanvas, 100); // fix: clear canvas update
   }
@@ -201,6 +190,8 @@ const VideoInformation = forwardRef((props, ref) => {
         />
       </div>
 
+      {/* TODO: Add controls for video: Select File, Play, Reset. */}
+
       <div className="information">
         <Button variant="contained" component="label" startIcon={<FileUploadIcon />}>
           Select File
@@ -212,16 +203,6 @@ const VideoInformation = forwardRef((props, ref) => {
             onChange={onLoadFile}
           />
         </Button>
-        <List >
-          <ListItem>
-            <ListItemIcon>
-              <TimeToLeaveIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Number of vehicules"
-              secondary={numberVehicles} />
-          </ListItem>
-        </List>
       </div>
     </div>
   </>
