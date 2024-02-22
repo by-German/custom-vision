@@ -3,14 +3,8 @@ import * as cvstfjs from '@microsoft/customvision-tfjs';
 import './Video-information.css';
 import {
   Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Slider,
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload'
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 
 const width = 500;
 const height = 350;
@@ -31,11 +25,7 @@ const VideoInformation = forwardRef((props, ref) => {
   const setVideoChanged = props.setVideoChanged;
 
   // manage internal values
-  // const internalThresholdValue = props.thresholdValue;
-  // const [internalThresholdValue, setInternalThresholdValue] = props.thresholdValueUseState;
-  // const [thresholdValue, setThresholdValue] = useState(props.thresholdValue);
   const internalThresholdValue = useRef(props.thresholdValue);
-
 
   useImperativeHandle(ref, () => ({
     playVideo,
@@ -154,7 +144,8 @@ const VideoInformation = forwardRef((props, ref) => {
 
   const playVideo = () => {
     finishPredicting.current = false;
-    videoRef.current.playbackRate = 0.5; // fix static time in semaphoreTimeLogic
+    // Control video speed for improve performance in low-end devices
+    // videoRef.current.playbackRate = 0.5;
     predict();
     videoRef.current.play();
     setIsPlaying(true);
@@ -199,8 +190,6 @@ const VideoInformation = forwardRef((props, ref) => {
           height={height}
         />
       </div>
-
-      {/* TODO: Add controls for video: Select File, Play, Reset. */}
 
       <div className="information">
         <Button
