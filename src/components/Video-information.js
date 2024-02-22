@@ -183,8 +183,8 @@ const VideoInformation = forwardRef((props, ref) => {
           height={height}
         />
         <canvas className="interact"
-          onMouseMove={showValidAreaOnCanvas}
-          onMouseDown={onClickValidArea}
+          // onMouseMove={showValidAreaOnCanvas}
+          // onMouseDown={onClickValidArea}
           ref={canvasValidZone}
           width={width}
           height={height}
