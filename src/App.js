@@ -104,36 +104,32 @@ function App() {
                   min={0.01}
                   max={0.99}
                   valueLabelDisplay="auto"
+                  style={{ color: '#ada5cd' }}
                   onChange={handleThresholdValue}
                 />
               </ListItem>
             </List>
 
             <div className="button-container">
-              {!isPLaying ?
-                <Button
-                  variant={videoComponent.disabledPlayButton ? "outlined" : "contained" }
-                  startIcon={<PlayArrow />}
-                  onClick={handlePlayVideo}
-                  disabled={videoComponent.disabledPlayButton}
-                  style={{
-                    color: videoComponent.disabledPlayButton ?
-                      '#959595' : undefined, // Color del texto cuando está deshabilitado
-                    backgroundColor: videoComponent.disabledPlayButton ?
-                      'transparent' : undefined, // Color cuando está deshabilitado
-                      borderColor: videoComponent.disabledPlayButton ? 
-                      '#303030' : undefined, // Color del borde cuando está deshabilitado
-                  }}>
-                  Start
-                </Button> :
-                <Button
-                  variant="contained"
-                  startIcon={<PauseIcon />}
-                  onClick={handlePauseVideo}>
-                  Pause
-                </Button>
-              }
-              <Button variant="outlined" onClick={handleResetPredict}>
+              <Button
+                variant={videoComponent.disabledPlayButton ? "outlined" : "contained"}
+                startIcon={!isPLaying ? <PlayArrow /> : <PauseIcon />}
+                onClick={!isPLaying ? handlePlayVideo : handlePauseVideo}
+                disabled={videoComponent.disabledPlayButton}
+                style={{
+                  color: videoComponent.disabledPlayButton ?
+                    '#959595' : undefined, // Color del texto cuando está deshabilitado
+                  backgroundColor: videoComponent.disabledPlayButton ?
+                    'transparent' : '#9366cb', // Color cuando está deshabilitado
+                  borderColor: videoComponent.disabledPlayButton ?
+                    '#303030' : undefined, // Color del borde cuando está deshabilitado
+                }}>
+                {!isPLaying ? 'Start' : 'Pause'}
+              </Button>
+              <Button
+                variant="outlined"
+                style={{ borderColor: '#ada5cd', color: '#ada5cd'}}
+                onClick={handleResetPredict}>
                 Reset
               </Button>
             </div>
