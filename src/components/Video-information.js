@@ -203,7 +203,11 @@ const VideoInformation = forwardRef((props, ref) => {
       {/* TODO: Add controls for video: Select File, Play, Reset. */}
 
       <div className="information">
-        <Button variant="contained" component="label" startIcon={<FileUploadIcon />}>
+        <Button
+          variant="contained"
+          component="label"
+          startIcon={<FileUploadIcon />}
+          style={{backgroundColor: '#9366cb'}}>
           Select File
           <input
             hidden
