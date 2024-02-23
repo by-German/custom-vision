@@ -4,6 +4,15 @@ const navigateToGithub = () => {
   window.open('https://github.com/by-German', '_blank');
 }
 
+const downloadModel = () => {
+  const link = document.createElement('a');
+  link.href = '/model.json';
+  link.download = 'model.json';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 export function Header() {
   return (
     <AppBar
@@ -31,7 +40,8 @@ export function Header() {
           </Button>
           <Button
             sx={{ color: '#fff', borderColor: '#8b5dc7', paddingLeft: "32px", paddingRight: "32px" }}
-            variant="outlined">
+            variant="outlined"
+            onClick={downloadModel}>
             Download Model
           </Button>
         </Box>
