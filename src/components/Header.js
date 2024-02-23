@@ -5,12 +5,20 @@ const navigateToGithub = () => {
 }
 
 const downloadModel = () => {
-  const link = document.createElement('a');
-  link.href = '/model.json';
-  link.download = 'model.json';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const files = [
+    { url: '/model.json', fileName: 'model.json' },
+    { url: '/weights.bin', fileName: 'weights.bin' }
+  ];
+
+  files.forEach(file => {
+    const link = document.createElement('a');
+    link.href = file.url;
+    link.download = file.fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 }
 
 export function Header() {
