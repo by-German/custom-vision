@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material"
 
 const navigateToGithub = () => {
-  window.open('https://github.com/by-German', '_blank');
+  window.open('https://github.com/by-German/custom-vision', '_blank');
 }
 
 const downloadModel = () => {
