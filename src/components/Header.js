@@ -1,6 +1,8 @@
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material"
 
-const navItems = ['Home', 'Github'];
+const navigateToGithub = () => {
+  window.open('https://github.com/by-German', '_blank');
+}
 
 export function Header() {
   return (
@@ -22,11 +24,16 @@ export function Header() {
           Vehicle Detection
         </Typography>
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-          {navItems.map((item) => (
-            <Button key={item} sx={{ color: '#fff', paddingLeft: "32px", paddingRight: "32px" }}>
-              {item}
-            </Button>
-          ))}
+          <Button
+            sx={{ color: '#fff', paddingLeft: "32px", paddingRight: "32px", marginRight: "16px" }}
+            onClick={navigateToGithub}>
+            Github
+          </Button>
+          <Button
+            sx={{ color: '#fff', borderColor: '#8b5dc7', paddingLeft: "32px", paddingRight: "32px" }}
+            variant="outlined">
+            Download Model
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
