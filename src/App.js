@@ -115,7 +115,7 @@ function App() {
                 variant={videoComponent.disabledPlayButton ? "outlined" : "contained"}
                 startIcon={!isPLaying ? <PlayArrow /> : <PauseIcon />}
                 onClick={!isPLaying ? handlePlayVideo : handlePauseVideo}
-                disabled={videoComponent.disabledPlayButton}
+                disabled={videoComponent.disabledPlayButton} // TODO: Deshabilitar el botón si no se ha cargado el video
                 style={{
                   color: videoComponent.disabledPlayButton ?
                     '#959595' : undefined, // Color del texto cuando está deshabilitado
